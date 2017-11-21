@@ -62,7 +62,7 @@ for i = 1:numb_p
         [match, A] = dict_recovery_check(Ar, A);
         per_trial_error = norm(A - Ar, 'fro');
         
-        if size(match, 1) == size(Ar, 1) && per_trial_error < params.reconst_err ...
+        if size(match, 1) == size(Ar, 1) && per_trial_error < params.reconst_err_thres ...
 %                 && numb_atom_rec == size(Ar, 2)
             success_count = success_count + 1;
         end
