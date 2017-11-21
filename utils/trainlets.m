@@ -34,7 +34,7 @@ params.Ytrain = Ytrain;
 params.Ytest = Ytest;
 params.NCleanDict = 0; % pruning redundant atoms
 
-[A, ~, ~, ~, ~] = OSDL(params);
+[A, ~, ~, ~] = OSDL(params);
 A = normc(A);
 
 

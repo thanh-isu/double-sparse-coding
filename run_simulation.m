@@ -2,8 +2,10 @@ function [] = run_simulation()
 % 
 % Running mode: mode 'trunc', 'arora', 'thres', 'trainlets'
 
-% Load the data: reference dict Ar, sample Ytrain and sparse code Xt
-load data/noiseless.mat % This file has 30k samples
+% Load the data and change the parameter accordingly
+load data/1_no_noise.mat
+params.reg = 0; % reg for noise/noiseless regime
+params.overcomplete = 0; % 1 - complete data, 2 - overcomplete
 
 % Run the experiment varying p, 10 values
 p = size(Ytrain, 2);
@@ -18,13 +20,15 @@ mean_error = zeros(numb_p, 1);
 detailed_error = zeros(numb_p, num_mcmc);
 run_time = zeros(numb_p, 1);
 
-
 % Set parameters for initialization procedure
 params.dict_size = size(Ar);
-params.k = 6; % Sparsity of x
-params.s = 2; % Sparsity of A
 params.iterations = 2e3; % Number of iterations of the algorithm
-params.mode = 'thres'; % 'trunc', 'thres', 'trainlets' and 'arora' mode normal SC initialization with IHT
+% 'trunc', 'thres', 'trainlets' and 'arora' mode normal SC initialization with IHT
+params.mode = 'trunc';
+
+% Load params
+params = params_config(params);
+
 fname = sprintf('output/%s_dsc_noiseless_rd.mat', params.mode);
 
 for i = 1:numb_p
@@ -44,11 +48,11 @@ for i = 1:numb_p
         if strcmp(params.mode, 'trainlets')
             A = trainlets(params);
         else
-            [numb_atom_rec, A0] = dsparse_spectral_init(params);
+            [numb_atom_rec, A0] = spectral_init_algorithm(params);
 
             % Given the initial to the main algorithm
             params.A0 = A0;
-            A = neural_sparse_coding(params);
+            A = descent_algorithm(params);
         end
         
         % Running time is measure right after learning
@@ -58,7 +62,7 @@ for i = 1:numb_p
         [match, A] = dict_recovery_check(Ar, A);
         per_trial_error = norm(A - Ar, 'fro');
         
-        if size(match, 1) == size(Ar, 1) && per_trial_error < 1e-4 ...
+        if size(match, 1) == size(Ar, 1) && per_trial_error < params.reconst_err ...
 %                 && numb_atom_rec == size(Ar, 2)
             success_count = success_count + 1;
         end

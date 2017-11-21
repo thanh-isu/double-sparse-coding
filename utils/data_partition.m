@@ -2,7 +2,10 @@ function [Y1, Y2] = data_partition(params)
 %DATA_PARTITION Partition the whole sample set params.Y into P1 and P2. P1
 %with samples Y1 for sampling u and v. The other is for estimation. The
 %size of P1 and P2 is pre-specified but depends on some required orders of
-%the algorithm
+%the algorithm. 
+
+% NOTE: Partitioning is only for analysis. In practice, it may be unnecessary.
+% We can use the same set for sampling and calculate covariance matrix
 
 Y = params.Y;
 n = params.dict_size(1);
@@ -22,7 +25,7 @@ P2 = 1:p; P2(P1) = [];
 
 Y1 = Y(:, P1); Y2 = Y(:, P2);
 
-% Get all
-Y1 = Y; Y2 = Y;
+% Uncomment this for P1 = P2
+% Y1 = Y; Y2 = Y;
 end
 
