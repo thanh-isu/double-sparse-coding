@@ -44,7 +44,7 @@ for i = 1:T
         % This is basically the same as projected along the estimated
         % support. Just for convenience and cases where not all columns are
         % estimated from the initialization
-    	A = HardThres(A, s);
+    	A = hard_threshold(A, s);
     end
     A = normc(full(A));
 end

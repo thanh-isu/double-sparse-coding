@@ -2,14 +2,14 @@ function [] = run_simulation()
 % 
 % Running mode: mode 'trunc', 'arora', 'thres', 'trainlets'
 
-% Load the data and change the parameter accordingly
-load data/1_no_noise.mat
+% Load the data (Ar, Ytrain, Xt) and change the parameter accordingly
+load data/2_no_noise.mat
 params.reg = 0; % reg for noise/noiseless regime
-params.overcomplete = 0; % 1 - complete data, 2 - overcomplete
+params.overcomplete = 1; % 1 - complete data, 2 - overcomplete
 
 % Run the experiment varying p, 10 values
 p = size(Ytrain, 2);
-varied_p = (1:10)*5e2;
+varied_p = (2:10)*5e2;
 numb_p = size(varied_p, 2);
 
 % Number of trials for each p
@@ -24,12 +24,12 @@ run_time = zeros(numb_p, 1);
 params.dict_size = size(Ar);
 params.iterations = 2e3; % Number of iterations of the algorithm
 % 'trunc', 'thres', 'trainlets' and 'arora' mode normal SC initialization with IHT
-params.mode = 'trunc';
+params.mode = 'arora';
 
 % Load params
 params = params_config(params);
 
-fname = sprintf('output/%s_dsc_noiseless_rd.mat', params.mode);
+fname = sprintf('output/%s_dsc_noiseless_oc.mat', params.mode);
 
 for i = 1:numb_p
     % Fix number of samples, shuffle the data set and get pi of them
@@ -85,9 +85,9 @@ end
 
 save(fname, 'varied_p', 'prob_success', 'mean_error', 'run_time', 'detailed_error');
 % txt files with ascii for tikz plots
-save(sprintf('output/time_noiseless_%s_rd.txt', params.mode), 'run_time', '-ascii', '-double'); 
-save(sprintf('output/psucc_noiseless_%s_rd.txt', params.mode), 'prob_success', '-ascii', '-double');
-save(sprintf('output/error_noiseless_%s_rd.txt', params.mode), 'mean_error', '-ascii', '-double');
+save(sprintf('output/time_noiseless_%s_oc.txt', params.mode), 'run_time', '-ascii', '-double'); 
+save(sprintf('output/psucc_noiseless_%s_oc.txt', params.mode), 'prob_success', '-ascii', '-double');
+save(sprintf('output/error_noiseless_%s_oc.txt', params.mode), 'mean_error', '-ascii', '-double');
 
 end
 
